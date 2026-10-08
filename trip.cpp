@@ -255,6 +255,8 @@ int main() {
                     file_write << "\n";
                     file_write << "Time fully stopped:" <<  setw(to_string(Time_Stop).length()-1) << fixed << setprecision(2) << Time_Stop << " s";
                     file_write << "\n";
+
+                    file_write.close();
                 }
             }
 
