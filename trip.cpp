@@ -40,7 +40,6 @@ int main() {
             
                 total_readings++;  //Counting total number of readings in the file . 
         }
-        total_readings--;
         file_read.close();
 
         if (N == total_readings){
@@ -49,6 +48,7 @@ int main() {
 
             if (!file_read.is_open()) {
                 cout << "Error encountered!. File is not opening"; 
+                return 1;
 
             } else {
 
@@ -84,7 +84,6 @@ int main() {
                 double time_array[MAX_Index]; //To store the corresponding time
                 double distance_array[MAX_Index]; //To store the corresponding distance 
 
-                bool Dont_Write = false; //To stop the program from writing non-changing time , and negative speeds into the output file.
                 string speed_and_time; //To store the read data from trip.txt
 
                 while (!file_read.eof()){
@@ -101,17 +100,16 @@ int main() {
                     
 
                     if (time == Prev_time && time != 0){
-                        Dont_Write = true; 
+                        
                         
                         cout << "The file is rejected! because time doesnt change between readings." << "\n"; 
                         cout << "Reading #" << Reading_num-1 << fixed << setprecision(2) << " states speed as: " << Prev_speed << " and time as: " << Prev_time << "\n"; 
                         cout << " While Reading #" << Reading_num-1 << fixed << setprecision(2) << " states speed as: " << speed << " and time as: " << time;
-                        break; 
+                        return 1;
                     } else if (speed < 0) {
-                        Dont_Write = true;
                         cout << "The file is rejected! because speed readin is stated as negative." << "\n"; 
                         cout << "Reading #" << Reading_num << fixed  << setprecision(2) <<" states speed as: " << speed << " and time as: " << time << "\n"; 
-                        break;
+                        return 1;
                     } else {
                         if (Array_element == 0) {
                         total_time = time; 
@@ -157,78 +155,122 @@ int main() {
 
                 }
                 file_read.close();
-                if (!Dont_Write) {
 
-                    total_distance = single_distance; 
-                    total_time = time-total_time;
-                    if (total_time != 0) {
-                        average_speed += single_distance/total_time;
-
-                    }
-                    
-                    
-
-                    
-                    cout << "Trip duration:" << setw(to_string(total_time).length()+4) << fixed << setprecision(2) << total_time << " s";
-                    cout << "\n";
-                    cout << "Distance travelled:" <<  setw(to_string(total_distance).length()-1) <<fixed << setprecision(2) << total_distance << " m";
-                    cout << "\n";
-
-                    if (average_speed != 0.00) {
-                        cout << "Average speed:" <<  setw(to_string(average_speed).length()+4) << fixed << setprecision(2) << average_speed << " m/s";
-                        
-                    } else {
-                         cout << "Average speed:" <<  setw(to_string(average_speed).length()+5) << "None.";
-                    }
-                    cout << "\n";
-                    
-                    if (Hardest_acceleration != 0.00) {
-                         cout << "Hardest acceleration:" <<  setw(to_string(Hardest_acceleration).length()-3) <<fixed << setprecision(2) << Hardest_acceleration << " m/s^2";
-                         cout << " (between t = " << fixed << setprecision(2) << accel_time_prev << " s and t = " << accel_time << " s)";
-
-                    } else {
-                        cout << "Hardest acceleration:" << setw(to_string(Hardest_acceleration).length()-3) << fixed << setprecision(2) << Hardest_acceleration << " m/s^2"; 
-                    }
-                   
-                    cout << "\n";
-
-                    if (Hardest_brake != 0.00) {
-                        cout << "Hardest braking:" <<  setw(to_string(Hardest_brake).length()+2) <<fixed << setprecision(2) << Hardest_brake << " m/s^2";
-                        cout << " (between t = " << fixed << setprecision(2) << deccel_time_prev << " s and t = " << deccel_time << " s)";
-
-                    } else {
-                        cout << "Hardest braking:" <<  setw(to_string(Hardest_brake).length()+2) <<fixed << setprecision(2) << Hardest_brake << " m/s^2";
-                    }
-                    
-                    cout << "\n";
-                    cout << "Time fully stopped:" <<  setw(to_string(Time_Stop).length()-1) << fixed << setprecision(2) << Time_Stop << " s";
-                    cout << "\n";
-                    cout << "Full distance table written to trip_report.txt"; 
+                total_distance = single_distance; 
+                total_time = time-total_time;
+                if (total_time != 0) {
+                    average_speed += single_distance/total_time;
 
                 }
+                    
+                    
+
+                    
+                cout << "Trip duration:" << setw(to_string(total_time).length()+4) << fixed << setprecision(2) << total_time << " s";
+                cout << "\n";
+                cout << "Distance travelled:" <<  setw(to_string(total_distance).length()-1) <<fixed << setprecision(2) << total_distance << " m";
+                cout << "\n";
+
+                if (average_speed != 0.00) {
+                    cout << "Average speed:" <<  setw(to_string(average_speed).length()+4) << fixed << setprecision(2) << average_speed << " m/s";
+                        
+                } else {
+                    cout << "Average speed:" <<  setw(to_string(average_speed).length()+5) << "None.";
+                }
+                cout << "\n";
+                    
+                if (Hardest_acceleration != 0.00) {
+                    cout << "Hardest acceleration:" <<  setw(to_string(Hardest_acceleration).length()-3) <<fixed << setprecision(2) << Hardest_acceleration << " m/s^2";
+                    cout << " (between t = " << fixed << setprecision(2) << accel_time_prev << " s and t = " << accel_time << " s)";
+
+                } else {
+                    cout << "Hardest acceleration:" << setw(to_string(Hardest_acceleration).length()-3) << fixed << setprecision(2) << Hardest_acceleration << " m/s^2"; 
+                }
+                   
+                cout << "\n";
+
+                if (Hardest_brake != 0.00) {
+                    cout << "Hardest braking:" <<  setw(to_string(Hardest_brake).length()+2) <<fixed << setprecision(2) << Hardest_brake << " m/s^2";
+                    cout << " (between t = " << fixed << setprecision(2) << deccel_time_prev << " s and t = " << deccel_time << " s)";
+
+                } else {
+                    cout << "Hardest braking:" <<  setw(to_string(Hardest_brake).length()+2) <<fixed << setprecision(2) << Hardest_brake << " m/s^2";
+                }
+                    
+                cout << "\n";
+                cout << "Time fully stopped:" <<  setw(to_string(Time_Stop).length()-1) << fixed << setprecision(2) << Time_Stop << " s";
+                cout << "\n";
+                cout << "Full distance table written to trip_report.txt"; 
 
                 
 
-                
+                ofstream file_write("trip_report.txt"); 
+                if (!file_write.is_open()) {
+                    cout << "Error! file trip_report.txt , cannot be opened"; 
+                } else {
+                    
+                    file_write << "time(s)" << "\t"; 
+                    file_write << " speed(m/s)" << "\t"; 
+                    file_write << " distance(m)" << "\t"; 
+                    file_write << "\n" ;
+
+                    for(int i = 0; i < N; i++) {
+                        file_write << fixed << setprecision(2) << "\t" << time_array[i] << "\t\t" << speed_array[i] << "\t\t" << distance_array[i] << "\t";
+                        file_write << "\n" ;
+                    }
+
+                    cout << "\n";
+
+                    file_write << "Trip duration:" << setw(to_string(total_time).length()+4) << fixed << setprecision(2) << total_time << " s";
+                    file_write << "\n";
+                    file_write << "Distance travelled:" <<  setw(to_string(total_distance).length()-1) <<fixed << setprecision(2) << total_distance << " m";
+                    file_write << "\n";
+
+                    if (average_speed != 0.00) {
+                        file_write << "Average speed:" <<  setw(to_string(average_speed).length()+4) << fixed << setprecision(2) << average_speed << " m/s";
+                        
+                    } else {
+                         file_write << "Average speed:" <<  setw(to_string(average_speed).length()+5) << "None.";
+                    }
+                    file_write << "\n";
+                    
+                    if (Hardest_acceleration != 0.00) {
+                         file_write << "Hardest acceleration:" <<  setw(to_string(Hardest_acceleration).length()-3) <<fixed << setprecision(2) << Hardest_acceleration << " m/s^2";
+                         file_write << " (between t = " << fixed << setprecision(2) << accel_time_prev << " s and t = " << accel_time << " s)";
+
+                    } else {
+                        file_write << "Hardest acceleration:" << setw(to_string(Hardest_acceleration).length()-3) << fixed << setprecision(2) << Hardest_acceleration << " m/s^2"; 
+                    }
+                   
+                    file_write << "\n";
+
+                    if (Hardest_brake != 0.00) {
+                        file_write << "Hardest braking:" <<  setw(to_string(Hardest_brake).length()+2) <<fixed << setprecision(2) << Hardest_brake << " m/s^2";
+                        file_write << " (between t = " << fixed << setprecision(2) << deccel_time_prev << " s and t = " << deccel_time << " s)";
+
+                    } else {
+                        file_write << "Hardest braking:" <<  setw(to_string(Hardest_brake).length()+2) <<fixed << setprecision(2) << Hardest_brake << " m/s^2";
+                    }
+                    
+                    file_write << "\n";
+                    file_write << "Time fully stopped:" <<  setw(to_string(Time_Stop).length()-1) << fixed << setprecision(2) << Time_Stop << " s";
+                    file_write << "\n";
+                }
             }
-                
+
         } else {
             cout << "The readings provided in the file dont match the readings mentioned at the first line of the file!." << "\n";
             cout << N << " mentioned. " << total_readings<< " available."; 
             
         }
-
     }
+
+ }
+
+
 
        
 
 
         
- }
-    cout << "\n"; 
 }
-
-
-
-
-

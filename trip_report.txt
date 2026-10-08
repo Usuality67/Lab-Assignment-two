@@ -1,0 +1,15 @@
+time(s)	 speed(m/s)	 distance(m)	
+	5.00		0.00		0.00	
+	10.00		0.00		0.00	
+	14.00		8.00		16.00	
+	20.00		8.00		64.00	
+	26.00		0.00		88.00	
+	30.00		0.00		88.00	
+	33.00		6.00		97.00	
+	40.00		6.00		139.00	
+Trip duration:        35.00 s
+Distance travelled:   139.00 m
+Average speed:        3.97 m/s
+Hardest acceleration: 2.00 m/s^2 (between t = 10.00 s and t = 14.00 s)
+Hardest braking:      -1.33 m/s^2 (between t = 20.00 s and t = 26.00 s)
+Time fully stopped:   9.00 s
