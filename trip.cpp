@@ -1,3 +1,6 @@
+//Name: Syed Muhammad Ziean, ERP: 35505, Section: Akhrahmah Rashid Friday-Saturday Batch.
+//
+
 #include <iostream> 
 #include <fstream> 
 #include <cstdlib>
@@ -12,17 +15,15 @@ using namespace std;
 int main() {
     
     string Num_readings;
-    
-    
 
     int total_readings = 0;
 
     //Validating if file exist
    
-    ifstream file_read("trip.txt"); 
+    ifstream file_read("Text_Files_Used/trip.txt"); 
 
-    if (!file_read.is_open()) {
-        cout << "Error encountered!. File is not opening"; 
+    if (!file_read) {
+        cout << "Error encountered!. File trip.txt is not opening for reading" << "\n"; 
 
     } else {
         //Reading the number of values in the file 
@@ -35,19 +36,17 @@ int main() {
             cout << "Readings more than 1000 are not accepted by the program!";
 
         } else {
-             while (!file_read.eof()) {
-                getline(file_read,Num_readings); 
-            
+             while (getline(file_read,Num_readings) ) {
                 total_readings++;  //Counting total number of readings in the file . 
-        }
+        } 
         file_read.close();
 
         if (N == total_readings){
 
-            ifstream file_read("trip.txt"); 
+            file_read.open("Text_Files_Used/trip.txt"); 
 
-            if (!file_read.is_open()) {
-                cout << "Error encountered!. File is not opening"; 
+            if (!file_read) {
+                cout << "Error encountered!. File trip.txt is not opening for reading."; 
                 return 1;
 
             } else {
@@ -86,16 +85,15 @@ int main() {
 
                 string speed_and_time; //To store the read data from trip.txt
 
-                while (!file_read.eof()){
-                    
+                while (getline(file_read, speed_and_time)){
 
-                    getline(file_read, speed_and_time);
                     Reading_num++;
-                    Index_finder = speed_and_time.find(" ");
-                    Index_extract = speed_and_time.length() - Index_finder;  
+                    Index_finder = speed_and_time.find(" "); //Find the index of the space character i.e its first instance
+                    Index_extract = speed_and_time.length() - Index_finder;  //Extract speed from 0 to this index+1 characters.
+                                                                             //And for time start from space index+1, and extract Index_extract characters.
 
-                    time = stod(speed_and_time.substr(0,Index_extract+1));  
-                    speed = stod(speed_and_time.substr(Index_finder+1,Index_extract));
+                    time = stod(speed_and_time.substr(0,Index_extract+1));  //Extracting time from the line and converting into a double
+                    speed = stod(speed_and_time.substr(Index_finder+1,Index_extract)); //Extracting speed from a line and converting into a double
                     
                     
 
@@ -105,26 +103,29 @@ int main() {
                         cout << "The file is rejected! because time doesnt change between readings." << "\n"; 
                         cout << "Reading #" << Reading_num-1 << fixed << setprecision(2) << " states speed as: " << Prev_speed << " and time as: " << Prev_time << "\n"; 
                         cout << " While Reading #" << Reading_num-1 << fixed << setprecision(2) << " states speed as: " << speed << " and time as: " << time;
-                        return 1;
+                        return 2;
                     } else if (speed < 0) {
                         cout << "The file is rejected! because speed readin is stated as negative." << "\n"; 
                         cout << "Reading #" << Reading_num << fixed  << setprecision(2) <<" states speed as: " << speed << " and time as: " << time << "\n"; 
                         return 1;
                     } else {
                         if (Array_element == 0) {
-                        total_time = time; 
-                        Prev_time = time; 
+                            //if its the first value then total and previous times are to be same
+                            total_time = time; 
+                            Prev_time = time; 
 
                     }
-                        speed_array[Array_element] = speed; 
+                        speed_array[Array_element] = speed;  
                         time_array[Array_element] = time; 
-                        single_distance = (0.5*(Prev_speed + speed)*(time-Prev_time) ) + Prev_distance; 
+                        single_distance = (0.5*(Prev_speed + speed)*(time-Prev_time) ) + Prev_distance; //Find the distance at the current point in time
                         distance_array[Array_element] = single_distance; 
 
                         if (speed == 0.00 && Prev_speed == 0.00 && time != 0) {
-                            Time_Stop += time-Prev_time; 
+                            Time_Stop += time-Prev_time; //Finding the total time car was stationary for
                         }
                         if (time != 0 && Array_element != 0) {
+                            //Finding acceleration and decceleration
+
                             Accel = (speed-Prev_speed)/(time-Prev_time) ;
                             Deccel = (speed-Prev_speed)/(time-Prev_time);  
 
@@ -157,7 +158,9 @@ int main() {
                 file_read.close();
 
                 total_distance = single_distance; 
+                //Total time the car has travelled for
                 total_time = time-total_time;
+
                 if (total_time != 0) {
                     average_speed += single_distance/total_time;
 
@@ -205,8 +208,10 @@ int main() {
                 
 
                 ofstream file_write("trip_report.txt"); 
-                if (!file_write.is_open()) {
-                    cout << "Error! file trip_report.txt , cannot be opened"; 
+                //Write all the information printed above into a trip_report.txt file
+                if (!file_write) {
+                    cout << "Error! file trip_report.txt , cannot be opened for writing"; 
+                    return 2;
                 } else {
                     
                     file_write << "time(s)" << "\t"; 
@@ -263,6 +268,7 @@ int main() {
         } else {
             cout << "The readings provided in the file dont match the readings mentioned at the first line of the file!." << "\n";
             cout << N << " mentioned. " << total_readings<< " available."; 
+            cout << "\n";
             
         }
     }
